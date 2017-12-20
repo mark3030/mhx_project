@@ -1,5 +1,5 @@
 
-###总体架构test
+###总体架构test1
 * 域名 host
 * 管理后台地址  host/web
 * 会员端地址 host/m
