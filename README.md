@@ -1,10 +1,8 @@
-微信图书商城实战课程
-==================
 
 ###总体架构
-* 域名 book.imooc.test
-* 管理后台地址  book.imooc.test/web
-* 会员端地址 book.imooc.test/m
+* 域名 host
+* 管理后台地址  host/web
+* 会员端地址 host/m
 
 
 ### 文件架构解释
