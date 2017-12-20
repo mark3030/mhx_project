@@ -22,7 +22,7 @@ $upload_config = Yii::$app->params['upload'];
 				<li class="nav-header">
 					<div class="profile-element text-center">
                         <img alt="image" class="img-circle" src="<?=UrlService::buildWwwUrl("/images/web/logo.png");?>" />
-                        <p class="text-muted">编程浪子</p>
+                        <p class="text-muted">平台名称</p>
 					</div>
 					<div class="logo-element">
                         <img alt="image" class="img-circle" src="<?=UrlService::buildWwwUrl("/images/web/logo.png");?>" />
@@ -30,7 +30,7 @@ $upload_config = Yii::$app->params['upload'];
 				</li>
 				<li class="dashboard">
 					<a href="<?=UrlService::buildWebUrl("/dashboard/index");?>"><i class="fa fa-dashboard fa-lg"></i>
-                        <span class="nav-label">仪表盘</span></a>
+                        <span class="nav-label">总概</span></a>
 				</li>
 				<li class="account">
 					<a href="<?=UrlService::buildWebUrl("/account/index");?>"><i class="fa fa-user fa-lg"></i> <span class="nav-label">账号管理</span></a>
@@ -68,7 +68,7 @@ $upload_config = Yii::$app->params['upload'];
 				<ul class="nav navbar-top-links navbar-right">
 					<li>
 						<span class="m-r-sm text-muted welcome-message">
-                            欢迎使用编程浪子图书商城管理后台
+                            欢迎使用平台后台
                         </span>
 					</li>
 					<li class="hidden">
