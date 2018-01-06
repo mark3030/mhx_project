@@ -4,9 +4,18 @@ namespace app\modules\web\controllers;
 
 use app\common\services\weixin\RequestService;
 use app\models\market\MarketQrcode;
+use app\models\market\Org;
 use app\modules\web\controllers\common\BaseController;
 
 class QrcodeController extends  BaseController{
+
+    public function actionOrg(){
+        $org_id = $this->current_user['org_id'];
+        $org_qrcode  = Org::findOne(['id'=>$org_id]);
+        return $this->render("org",[
+            'org_qrcode' => $org_qrcode,
+        ]);
+    }
 	public function actionIndex(){
 		$mix_kw = trim( $this->get("mix_kw","" ) );
 		$p = intval( $this->get("p",1) );

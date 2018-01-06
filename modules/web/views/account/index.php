@@ -37,7 +37,7 @@ StaticService::includeAppJsStatic( "/js/web/account/index.js",\app\assets\WebAss
 			<div class="row">
 				<div class="col-lg-12">
 					<a class="btn btn-w-m btn-outline btn-primary pull-right" href="<?=UrlService::buildWebUrl("/account/set");?>">
-						<i class="fa fa-plus"></i>账号
+						<i class="fa fa-plus"></i>添加员工
 					</a>
 				</div>
 			</div>
@@ -45,10 +45,10 @@ StaticService::includeAppJsStatic( "/js/web/account/index.js",\app\assets\WebAss
         <table class="table table-bordered m-t">
             <thead>
             <tr>
-                <th>序号</th>
                 <th>姓名</th>
                 <th>手机</th>
-                <th>邮箱</th>
+                <th>身份证</th>
+                <th>角色</th>
                 <th>操作</th>
             </tr>
             </thead>
@@ -56,10 +56,10 @@ StaticService::includeAppJsStatic( "/js/web/account/index.js",\app\assets\WebAss
             <?php if( $list ):?>
                 <?php foreach( $list as $_item ):?>
                 <tr>
-                    <td><?=$_item['uid'];?></td>
                     <td><?=UtilService::encode( $_item['nickname'] );?></td>
                     <td><?=UtilService::encode( $_item['mobile'] );?></td>
-                    <td><?=UtilService::encode( $_item['email'] );?></td>
+                    <td><?=UtilService::encode( $_item['ident'] );?></td>
+                    <td><?=UtilService::encode( $_item['role'] );?></td>
                     <td>
                         <a  href="<?=UrlService::buildWebUrl("/account/info",[ 'id' => $_item['uid'] ] );?>">
                             <i class="fa fa-eye fa-lg"></i>

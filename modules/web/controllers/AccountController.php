@@ -19,7 +19,6 @@ class AccountController extends  BaseController{
 		$status = intval( $this->get("status",ConstantMapService::$status_default ) );
 		$p = intval( $this->get("p",1) );
 		$p = ( $p > 0 )?$p:1;
-
 		$query = User::find();
 		if( $mix_kw ){
 			$where_nickname = [ 'LIKE','nickname','%-'.strtr($mix_kw,['%'=>'\%', '_'=>'\_', '\\'=>'\\\\']).'-%', false ];
@@ -30,7 +29,8 @@ class AccountController extends  BaseController{
 		if( $status > ConstantMapService::$status_default ){
 			$query->andWhere([ 'status' => $status ]);
 		}
-
+        $query->andWhere(['!=','uid',$this->current_user['uid']]);
+        $query->andWhere(['org_id'=>$this->current_user['org_id']]);
 		//分页功能,需要两个参数，1：符合条件的总记录数量  2：每页展示的数量
 		//60,60 ~ 11,10 - 1
 		$total_res_count = $query->count();
@@ -40,7 +40,9 @@ class AccountController extends  BaseController{
 			->offset( ( $p - 1 ) * $this->page_size )
 			->limit($this->page_size)
 			->all( );
-
+        foreach ($list as &$val){
+            $val['role'] = ConstantMapService::$role_mapping[$val['role']];
+        }
 		return $this->render("index",[
 			'list' => $list,
 			'search_conditions' => [
@@ -73,7 +75,8 @@ class AccountController extends  BaseController{
 		$id = intval( $this->post("id",0) );
 		$nickname = trim( $this->post("nickname","") );
 		$mobile = trim( $this->post("mobile","") );
-		$email = trim( $this->post("email","") );
+		$ident = trim( $this->post("ident","") );
+        $role = trim( $this->post("role",1) );
 		$login_name = trim( $this->post("login_name","") );
 		$login_pwd = trim( $this->post("login_pwd","") );
 		$date_now  = date("Y-m-d H:i:s");
@@ -86,8 +89,8 @@ class AccountController extends  BaseController{
 			return $this->renderJSON( [] , "请输入符合规范的手机号码~~" ,-1);
 		}
 
-		if( mb_strlen( $email,"utf-8" ) < 1 ){
-			return $this->renderJSON( [] , "请输入符合规范的邮箱地址~~" ,-1);
+		if( mb_strlen( $ident,"utf-8" ) < 1 ){
+			return $this->renderJSON( [] , "请输入符合规范的身份证~~" ,-1);
 		}
 
 		if( mb_strlen( $login_name,"utf-8" ) < 1 ){
@@ -113,9 +116,11 @@ class AccountController extends  BaseController{
 			$model_user->setSalt();
 			$model_user->created_time = $date_now;
 		}
+        $model_user->org_id = $this->current_user['org_id'];
 		$model_user->nickname = $nickname;
 		$model_user->mobile = $mobile;
-		$model_user->email = $email;
+		$model_user->ident = $ident;
+        $model_user->role = $role;
 		$model_user->avatar = ConstantMapService::$default_avatar;
 		$model_user->login_name = $login_name;
 		if( $login_pwd !=  ConstantMapService::$default_password ){

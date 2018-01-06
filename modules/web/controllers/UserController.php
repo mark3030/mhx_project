@@ -50,20 +50,20 @@ class UserController extends  BaseController{
 		}
 
 		$nickname = trim($this->post('nickname',''));
-		$email = trim( $this->post('email','') );
+		$ident = trim( $this->post('ident','') );
 
 		if( mb_strlen( $nickname,"utf-8" ) < 1 ){
 			return $this->renderJSON( [],"请输入符合规范的姓名~~",-1 );
 		}
 
-		if( mb_strlen( $email,"utf-8" ) < 1 ){
-			return $this->renderJSON( [],"请输入符合规范的邮箱地址~~",-1 );
+		if( mb_strlen( $ident,"utf-8" ) < 1 ){
+			return $this->renderJSON( [],"请输入符合规范的身份证~~",-1 );
 		}
 
 		$user_info = $this->current_user;
 
 		$user_info->nickname = $nickname;
-		$user_info->email = $email;
+		$user_info->ident = $ident;
 		$user_info->updated_time = date("Y-m-d H:i:s");
 		$user_info->update(0);
 

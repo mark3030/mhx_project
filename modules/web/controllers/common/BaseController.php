@@ -6,7 +6,7 @@ use app\common\services\UrlService;
 use app\models\User;
 use app\common\services\applog\ApplogService;
 class BaseController extends BaseWebController {
-	protected $page_size = 50;
+	protected $page_size = 10;
 	protected  $auth_cookie_name = "mooc_book";
 	protected $current_user = null;
 
@@ -51,12 +51,13 @@ class BaseController extends BaseWebController {
 		if( !$auth_cookie ){
 			return false;
 		}
-		list($auth_token,$uid) = explode("#",$auth_cookie);
-		if( !$auth_token || !$uid ){
+		list($auth_token,$uid,$org_id) = explode("*",$auth_cookie);
+		if( !$auth_token || !$uid || !$org_id){
 			return false;
 		}
+
 		if( $uid && preg_match("/^\d+$/",$uid) ){
-			$user_info = User::findOne([ 'uid' => $uid,'status' => 1 ]);
+			$user_info = User::findOne([ 'uid' => $uid,'status' => 1,'org_id'=>$org_id]);
 			if( !$user_info ){
 				$this->removeAuthToken();
 				return false;
@@ -74,7 +75,7 @@ class BaseController extends BaseWebController {
 
 	public function setLoginStatus( $user_info ){
 		$auth_token = $this->geneAuthToken( $user_info );
-		$this->setCookie($this->auth_cookie_name,$auth_token."#".$user_info['uid']);
+		$this->setCookie($this->auth_cookie_name,$auth_token.'*'.$user_info['uid'].'*'.$user_info['org_id']);
 	}
 
 	protected  function removeAuthToken(){

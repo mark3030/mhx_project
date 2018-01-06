@@ -15,16 +15,16 @@ var user_edit_ops = {
             var nickname_target = $(".user_edit_wrap input[name=nickname]");
             var nickname = nickname_target.val();
 
-            var email_target = $(".user_edit_wrap input[name=email]");
-            var email = email_target.val();
+            var ident_target = $(".user_edit_wrap input[name=ident]");
+            var ident = ident_target.val();
 
             if( !nickname || nickname.length < 2 ){
                 common_ops.tip("请输入符合规范的姓名~~",nickname_target);
                 return false;
             }
 
-            if( !email || email.length < 2 ){
-                common_ops.tip("请输入符合规范的邮箱地址~~",email_target);
+            if( !ident || ident.length < 2 ){
+                common_ops.tip("请输入符合规范的邮箱地址~~",ident_target);
                 return false;
             }
 
@@ -33,7 +33,7 @@ var user_edit_ops = {
 
             var data = {
                 nickname:nickname,
-                email:email
+                ident:ident
             };
 
             $.ajax({

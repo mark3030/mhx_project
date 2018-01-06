@@ -102,9 +102,15 @@ var common_ops = {
             nav_name = "market";
         }
 
+        if(  pathname.indexOf("/web/qrcode/org") > -1  ){
+            nav_name = "market_org";
+        }
+
         if(  pathname.indexOf("/web/stat") > -1  ){
             nav_name = "stat";
         }
+
+
 
         if( nav_name == null ){
             return;

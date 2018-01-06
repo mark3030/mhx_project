@@ -24,7 +24,7 @@ use \app\common\services\UtilService;
             <div class="col-lg-10">
                 <p class="m-t">姓名：<?=UtilService::encode( $info['nickname'] ) ;?></p>
                 <p>手机：<?=UtilService::encode( $info['mobile'] ) ;?></p>
-                <p>邮箱：<?=UtilService::encode( $info['email'] ) ;?></p>
+                <p>身份证：<?=UtilService::encode( $info['ident'] ) ;?></p>
             </div>
         </div>
         <div class="row m-t">

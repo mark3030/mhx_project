@@ -3,9 +3,9 @@
 return [
 	'title' => '编程浪子微信图书商城',
 	'domain' => [
-		'www' => 'http://book_my.imooc.test',
-		'm' => 'http://book_my.imooc.test/m',
-		'web' => 'http://book_my.imooc.test/web'
+		'www' => 'http://maihaoxin.project.com.tunnel.echomod.cn/',
+		'm' => 'http://maihaoxin.project.com.tunnel.echomod.cn/m',
+		'web' => 'http://maihaoxin.project.com.tunnel.echomod.cn/web'
 	],
 	'upload' => [
 		'avatar' => '/uploads/avatar',
@@ -13,9 +13,9 @@ return [
 		'book' => '/uploads/book',
 	],
 	'weixin' => [
-		'appid' => '根据实际情况填写',
-		'sk' => '根据实际情况填写',
-		'token' => '根据实际情况填写',
+		'appid' => 'wx426c6ca1430b487b',
+		'sk' => 'd190018a6491a5a223c3c00e727dc4a4',
+		'token' => '6f5f924719b212d4d795bca099729297',
 		'aeskey' => '根据实际情况填写',
 		'pay' => [
 			'key' => '根据实际情况填写',

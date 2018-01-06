@@ -17,8 +17,9 @@ var account_set_ops = {
             var nickname = nickname_target.val();
             var mobile_target = $(".wrap_account_set input[name=mobile]");
             var mobile = mobile_target.val();
-            var email_target = $(".wrap_account_set input[name=email]");
-            var email = email_target.val();
+            var ident_target = $(".wrap_account_set input[name=ident]");
+            var ident = ident_target.val();
+            var role = $('.wrap_account_set input:radio[name="role"]:checked').val();
             var login_name_target = $(".wrap_account_set input[name=login_name]");
             var login_name = login_name_target.val();
             var login_pwd_target = $(".wrap_account_set input[name=login_pwd]");
@@ -34,8 +35,8 @@ var account_set_ops = {
                 return;
             }
 
-            if( email.length < 1  ){
-                common_ops.tip("请输入符合规范的邮箱地址~~",email_target);
+            if( ident.length < 1  ){
+                common_ops.tip("请输入符合规范的身份证~~",email_target);
                 return;
             }
 
@@ -54,7 +55,8 @@ var account_set_ops = {
             var data = {
                 nickname:nickname,
                 mobile:mobile,
-                email:email,
+                ident:ident,
+                role:role,
                 login_name:login_name,
                 login_pwd:login_pwd,
                 id:$(".wrap_account_set input[name=id]").val()

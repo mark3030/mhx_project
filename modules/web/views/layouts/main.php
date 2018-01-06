@@ -1,5 +1,6 @@
 <?php
-use \app\common\services\UrlService;
+use app\common\services\UrlService;
+use app\common\services\ConstantMapService;
 \app\assets\WebAsset::register($this);
 $upload_config = Yii::$app->params['upload'];
 ?>
@@ -32,9 +33,14 @@ $upload_config = Yii::$app->params['upload'];
 					<a href="<?=UrlService::buildWebUrl("/dashboard/index");?>"><i class="fa fa-dashboard fa-lg"></i>
                         <span class="nav-label">总概</span></a>
 				</li>
+                <?php if($this->params['current_user']["role"] == ConstantMapService::$manager_role_id): ?>
 				<li class="account">
 					<a href="<?=UrlService::buildWebUrl("/account/index");?>"><i class="fa fa-user fa-lg"></i> <span class="nav-label">账号管理</span></a>
 				</li>
+                <?php endif; ?>
+                <li class="market_org">
+                    <a href="<?=UrlService::buildWebUrl("/qrcode/org");?>"><i class="fa fa-share-alt fa-lg"></i> <span class="nav-label">推广渠道</span></a>
+                </li>
                 <li class="brand">
                     <a href="<?=UrlService::buildWebUrl("/brand/info");?>"><i class="fa fa-cog fa-lg"></i> <span class="nav-label">品牌设置</span></a>
                 </li>

@@ -27,9 +27,9 @@ StaticService::includeAppJsStatic("/js/web/user/edit.js",\app\assets\WebAsset::c
             <div class="hr-line-dashed"></div>
 
             <div class="form-group">
-                <label class="col-lg-2 control-label">邮箱:</label>
+                <label class="col-lg-2 control-label">身份证:</label>
                 <div class="col-lg-10">
-                    <input type="text" name="email" class="form-control" placeholder="请输入邮箱~~" value="<?=$info?$info['email']:'';?>">
+                    <input type="text" name="ident" class="form-control" placeholder="请输入身份证~~" value="<?=$info?$info['ident']:'';?>">
                 </div>
             </div>
             <div class="hr-line-dashed"></div>
