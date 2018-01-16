@@ -91,4 +91,10 @@ class BaseController extends BaseWebController {
 		return $this->current_user?$this->current_user['uid']:0;
 	}
 
+    protected function getPagination(){
+        $p = intval($this->get("p", 1));
+        $p = ($p > 0) ? $p : 1;
+        return [$p,($p - 1) * $this->page_size,$this->page_size];
+    }
+
 }

@@ -21,7 +21,7 @@ use \app\common\services\StaticService;
                 <tr>
                     <td><?=UtilService::encode( $org_qrcode['org_name'] );?></td>
                     <td>
-                        <img style="width: 100px;height: 100px;" src="<?=UrlService::buildWwwUrl( "/default/qrcode",[ 'qr_code_url' => $_item['qrcode'] ] );?>"/>
+                        <img style="width: 100px;height: 100px;" src="<?=UrlService::buildWwwUrl( "/default/qrcode",[ 'qr_code_url' => $org_qrcode['qrcode'] ] );?>"/>
                     </td>
                     <td><?=UtilService::encode( 'sdf');?></td>
                 </tr>

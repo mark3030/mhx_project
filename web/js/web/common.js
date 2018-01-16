@@ -102,8 +102,8 @@ var common_ops = {
             nav_name = "market";
         }
 
-        if(  pathname.indexOf("/web/qrcode/org") > -1  ){
-            nav_name = "market_org";
+        if(  pathname.indexOf("/web/org") > -1  ){
+            nav_name = "org";
         }
 
         if(  pathname.indexOf("/web/stat") > -1  ){
@@ -170,7 +170,22 @@ var common_ops = {
         $('html, body').animate({
             scrollTop: target.offset().top - 10
         }, 100);
+    },
+
+    check:function( type,value ){
+        if(type == 'mobile'){
+            if(!value.match(/^(((13[0-9]{1})|159|153)+\d{8})$/)){
+                return false;
+            }
+        }
+        if(type == 'ident'){
+            if(!value.match(/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/)){
+                return false;
+            }
+        }
+        return true;
     }
+
 };
 
 $(document).ready( function() {

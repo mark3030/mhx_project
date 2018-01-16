@@ -38,9 +38,11 @@ $upload_config = Yii::$app->params['upload'];
 					<a href="<?=UrlService::buildWebUrl("/account/index");?>"><i class="fa fa-user fa-lg"></i> <span class="nav-label">账号管理</span></a>
 				</li>
                 <?php endif; ?>
-                <li class="market_org">
-                    <a href="<?=UrlService::buildWebUrl("/qrcode/org");?>"><i class="fa fa-share-alt fa-lg"></i> <span class="nav-label">推广渠道</span></a>
-                </li>
+                <?php if($this->params['current_user']["org_id"] == ConstantMapService::$headquarters_id): ?>
+                    <li class="org">
+                        <a href="<?=UrlService::buildWebUrl("/org/index");?>"><i class="fa fa-users fa-lg"></i> <span class="nav-label">机构管理</span></a>
+                    </li>
+                <?php endif; ?>
                 <li class="brand">
                     <a href="<?=UrlService::buildWebUrl("/brand/info");?>"><i class="fa fa-cog fa-lg"></i> <span class="nav-label">品牌设置</span></a>
                 </li>
