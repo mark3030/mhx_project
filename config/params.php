@@ -1,11 +1,16 @@
 <?php
-
+$host = 'http://localhost';
 return [
 	'title' => '编程浪子微信图书商城',
-	'domain' => [
-		'www' => 'http://maihaoxin.project.com.tunnel.echomod.cn/',
-		'm' => 'http://maihaoxin.project.com.tunnel.echomod.cn/m',
-		'web' => 'http://maihaoxin.project.com.tunnel.echomod.cn/web'
+//	'domain' => [
+//		'www' => 'http://maihaoxin.project.com.tunnel.echomod.cn/',
+//		'm' => 'http://maihaoxin.project.com.tunnel.echomod.cn/m',
+//		'web' => 'http://maihaoxin.project.com.tunnel.echomod.cn/web'
+//	],
+    'domain' => [
+		'www' => $host,
+		'm' => $host. '/m',
+		'web' =>$host.'/web'
 	],
 	'upload' => [
 		'avatar' => '/uploads/avatar',

@@ -11,7 +11,8 @@ class ConstantMapService
     public static $default_password = '******';
     public static $default_time_stamps = '0000-00-00 00:00:00';
     public static $default_syserror = '系统繁忙，请稍后再试~~';
-    public static $manager_role_id = '4';//机构管理员id
+    public static $manager_role_id = '1';//机构管理员id
+    public static $headquarters_id = '1';//总公司机构id
 
     public static $status_default = -1;
     public static $status_mapping = [

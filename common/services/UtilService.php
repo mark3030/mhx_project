@@ -26,4 +26,5 @@ class UtilService {
 		}
 		return false;
 	}
+
 }

@@ -57,4 +57,12 @@ class User extends \yii\db\ActiveRecord
         return 'user';
     }
 
+    public static function checkLoginName($login_name,$uid){
+        $has_in = User::find()->where(['login_name' => $login_name])->andWhere(['!=', 'uid', $uid])->count();
+        if($has_in){
+            return false;
+        }
+        return true;
+    }
+
 }
