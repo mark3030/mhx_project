@@ -11,7 +11,7 @@ use \app\common\services\UtilService;
             <div class="col-lg-12">
                 <div class="m-b-md">
                     <?php if( $info && $info['status']):?>
-                    <a class="btn btn-outline btn-primary pull-right" href="<?=UrlService::buildWebUrl("/account/set",[ 'id' => $info['uid'] ]);?>">
+                    <a class="btn btn-outline btn-primary pull-right" href="<?=UrlService::buildWebUrl("/org/set",[ 'uid' => $info['uid'] ]);?>">
                         <i class="fa fa-pencil"></i>编辑
                     </a>
                     <?php endif;?>
@@ -23,10 +23,15 @@ use \app\common\services\UtilService;
             <div class="col-lg-2 text-center">
                 <img class="img-circle circle-border" src="<?=UrlService::buildWwwUrl("/images/common/qrcode.jpg");?>" width="100px" height="100px"/>
             </div>
-            <div class="col-lg-10">
+            <div class="col-lg-3">
                 <p class="m-t">姓名：<?=UtilService::encode( $info['nickname'] ) ;?></p>
                 <p>手机：<?=UtilService::encode( $info['mobile'] ) ;?></p>
                 <p>身份证：<?=UtilService::encode( $info['ident'] ) ;?></p>
+            </div>
+            <div class="col-lg-7">
+                <p class="m-t">机构名称：<?=UtilService::encode( $info['org_name'] ) ;?></p>
+                <p>余额：<?=UtilService::encode( $info['balance'] );?>元</p>
+                <p>截止日期：<?=UtilService::encode( substr($info['deadline'],0,10) ) ;?></p>
             </div>
         </div>
         <div class="row m-t">

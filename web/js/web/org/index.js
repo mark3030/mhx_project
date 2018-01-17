@@ -21,7 +21,7 @@ var account_index_ops = {
         var callback = {
             'ok':function(){
                 $.ajax({
-                    url:common_ops.buildWebUrl("/account/ops"),
+                    url:common_ops.buildWebUrl("/org/ops"),
                     type:'POST',
                     data:{
                         act:act,
@@ -31,17 +31,17 @@ var account_index_ops = {
                     success:function( res ){
                         var callback = null;
                         if( res.code == 200 ){
-                            callback = function(){
+                            //callback = function(){
                                 window.location.href = window.location.href;
-                            }
+                           // }
                         }
-                        common_ops.alert( res.msg,callback );
+                        //common_ops.alert( res.msg,callback );
                     }
                 });
             },
             'cancel':null
         };
-        common_ops.confirm( ( act=="remove" )?"确定删除？":"确定恢复？",callback );
+        common_ops.confirm( ( act=="remove" )?"确定禁用？":"确定恢复？",callback );
     }
 };
 

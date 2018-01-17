@@ -36,12 +36,12 @@ class Org extends \yii\db\ActiveRecord
         $query->from(['org' => Org::tableName()])->innerJoin(['user' => User::tableName()], 'org.id = user.org_id');
         $query->where(['!=', 'org_id', $org_id]);
         if ($mix_kw) {
-            $where_org_name = ['LIKE', 'org_name', '%-' . strtr($mix_kw, ['%' => '\%', '_' => '\_', '\\' => '\\\\']) . '-%', false];
-            $where_nickname = ['LIKE', 'nickname', '%-' . strtr($mix_kw, ['%' => '\%', '_' => '\_', '\\' => '\\\\']) . '-%', false];
+            $where_org_name = ['LIKE', 'org_name', '%' . strtr($mix_kw, ['%' => '\%', '_' => '\_', '\\' => '\\\\']) . '%', false];
+            $where_nickname = ['LIKE', 'nickname', '%' . strtr($mix_kw, ['%' => '\%', '_' => '\_', '\\' => '\\\\']) . '%', false];
             $query->andWhere(['OR', $where_org_name, $where_nickname]);
         }
         if ($status > ConstantMapService::$status_default) {
-            $query->andWhere(['status' => $status]);
+            $query->andWhere(['user.status' => $status]);
         }
         $query->select($select);
         $total_count = $query->count();
@@ -59,7 +59,7 @@ class Org extends \yii\db\ActiveRecord
         $query = new Query();
         $select = [
             'org_id', 'uid', 'org_name', 'nickname', 'mobile', 'ident', 'deadline', 'balance',
-            'user.created_time as created_time', 'login_name'
+            'user.created_time as created_time', 'login_name','user.status as status'
         ];
         $query->from(['org' => Org::tableName()])->innerJoin(['user' => User::tableName()], 'org.id = user.org_id');
         $query->filterWhere($condition);

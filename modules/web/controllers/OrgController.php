@@ -94,7 +94,7 @@ class OrgController extends BaseController
             return $this->renderJSON([], "请输入符合规范的登录密码", -1);
         }
         if(!User::checkLoginName($login_name,$id)){
-            return $this->renderJSON([], "该登录名已存在，请换一个试试~~", -1);
+            return $this->renderJSON([], "该登录名已存在，请换一个试试", -1);
         }
         $org_info = Org::findOne(['id'=>$org_id]);
         if ($org_info) {
@@ -137,18 +137,17 @@ class OrgController extends BaseController
 
     public function actionInfo()
     {
-        $id = intval($this->get("id", 0));
-        $reback_url = UrlService::buildWebUrl("/account/index");
-        if (!$id) {
+        $uid = intval($this->get("uid", 0));
+        $reback_url = UrlService::buildWebUrl("/org/index");
+        if (!$uid) {
             return $this->redirect($reback_url);
         }
 
-        $info = User::find()->where(['uid' => $id])->one();
+        $info = Org::getInfo(['uid'=>$uid]);
         if (!$info) {
             return $this->redirect($reback_url);
         }
-
-        $access_list = AppAccessLog::find()->where(['uid' => $id])->orderBy(['id' => SORT_DESC])->limit(10)->all();
+        $access_list = AppAccessLog::find()->where(['uid' => $uid])->orderBy(['id' => SORT_DESC])->limit(10)->all();
 
         return $this->render("info", [
             'info' => $info,
@@ -166,29 +165,35 @@ class OrgController extends BaseController
         $id = $this->post('id', []);
         $act = trim($this->post('act', ''));
         if (!$id) {
-            return $this->renderJSON([], "请选择要操作的账号~~", -1);
+            return $this->renderJSON([], "请选择要操作的账号", -1);
         }
 
         if (!in_array($act, ['remove', 'recover'])) {
-            return $this->renderJSON([], "操作有误，请重试~~", -1);
+            return $this->renderJSON([], "操作有误，请重试", -1);
         }
 
         $info = User::find()->where(['uid' => $id])->one();
         if (!$info) {
-            return $this->renderJSON([], "指定账号不存在~~", -1);
+            return $this->renderJSON([], "指定账号不存在", -1);
         }
-
+        $org_id = $info->org_id;
+        $org_info = Org::findOne(['id'=>$org_id]);
         switch ($act) {
             case "remove":
                 $info->status = 0;
+                $org_info->status = 0;
                 break;
             case "recover":
                 $info->status = 1;
+                $org_info->status = 1;
                 break;
         }
-        $info->updated_time = date("Y-m-d H:i:s");
+        $now = date("Y-m-d H:i:s");
+        $info->updated_time = $now;
         $info->update(0);
-        return $this->renderJSON([], "操作成功~~");
+        $org_info->updated_time =$now;
+        $org_info->update(0);
+        return $this->renderJSON([], "操作成功");
     }
 
 }

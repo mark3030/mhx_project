@@ -63,7 +63,7 @@ StaticService::includeAppJsStatic("/js/web/org/index.js", \app\assets\WebAsset::
                     <tr>
                         <td><?= UtilService::encode($_item['org_name']); ?></td>
                         <td><?= UtilService::encode($_item['nickname']); ?></td>
-                        <td><?= UtilService::encode($_item['deadline']); ?></td>
+                        <td><?= UtilService::encode(substr($_item['deadline'],0,10)); ?></td>
                         <td><?= UtilService::encode($_item['balance']); ?></td>
                         <td><?= UtilService::encode($_item['created_time']); ?></td>
                         <td>
