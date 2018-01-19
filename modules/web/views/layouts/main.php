@@ -37,6 +37,9 @@ $upload_config = Yii::$app->params['upload'];
 				<li class="account">
 					<a href="<?=UrlService::buildWebUrl("/account/index");?>"><i class="fa fa-user fa-lg"></i> <span class="nav-label">账号管理</span></a>
 				</li>
+                <li class="role">
+                    <a href="<?=UrlService::buildWebUrl("/role/index");?>"><i class="fa fa-sitemap fa-lg"></i> <span class="nav-label">角色管理</span></a>
+                </li>
                 <?php endif; ?>
                 <?php if($this->params['current_user']["org_id"] == ConstantMapService::$headquarters_id): ?>
                     <li class="org">
