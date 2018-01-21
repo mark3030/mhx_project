@@ -78,10 +78,6 @@ class Memcache extends CodeceptionModule
      */
     public function _after(TestInterface $test)
     {
-        if (empty($this->memcache)) {
-            return;
-        }
-
         $this->memcache->flush();
         switch (get_class($this->memcache)) {
             case 'Memcache':

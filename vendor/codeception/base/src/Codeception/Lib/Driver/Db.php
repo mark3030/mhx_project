@@ -1,8 +1,6 @@
 <?php
 namespace Codeception\Lib\Driver;
 
-use Codeception\Exception\ModuleException;
-
 class Db
 {
     /**
@@ -17,6 +15,11 @@ class Db
 
     protected $user;
     protected $password;
+
+    /**
+     * @var string
+     */
+    public $sqlToRun;
 
     /**
      * associative array with table name => primary-key
@@ -87,7 +90,7 @@ class Db
     public function getDb()
     {
         $matches = [];
-        $matched = preg_match('~dbname=(\w+)~s', $this->dsn, $matches);
+        $matched = preg_match('~dbname=(.*);~s', $this->dsn, $matches);
         if (!$matched) {
             return false;
         }
@@ -120,13 +123,10 @@ class Db
             $query .= "\n" . rtrim($sqlLine);
 
             if (substr($query, -1 * $delimiterLength, $delimiterLength) == $delimiter) {
-                $this->sqlQuery(substr($query, 0, -1 * $delimiterLength));
-                $query = '';
+                $this->sqlToRun = substr($query, 0, -1 * $delimiterLength);
+                $this->sqlQuery($this->sqlToRun);
+                $query = "";
             }
-        }
-
-        if ($query !== '') {
-            $this->sqlQuery($query);
         }
     }
 
@@ -214,14 +214,7 @@ class Db
 
     protected function sqlQuery($query)
     {
-        try {
-            $this->dbh->exec($query);
-        } catch (\PDOException $e) {
-            throw new ModuleException(
-                'Codeception\Module\Db',
-                $e->getMessage() . "\nSQL query being executed: " . $query
-            );
-        }
+        $this->dbh->exec($query);
     }
 
     public function executeQuery($query, array $params)

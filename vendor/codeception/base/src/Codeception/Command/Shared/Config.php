@@ -2,24 +2,25 @@
 namespace Codeception\Command\Shared;
 
 use Codeception\Configuration;
-use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
 trait Config
 {
-    protected function getSuiteConfig($suite)
+    protected function getSuiteConfig($suite, $conf)
     {
-        return Configuration::suiteSettings($suite, $this->getGlobalConfig());
+        $config = Configuration::config($conf);
+        return Configuration::suiteSettings($suite, $config);
     }
 
-    protected function getGlobalConfig($conf = null)
+    protected function getGlobalConfig($conf)
     {
         return Configuration::config($conf);
     }
 
-    protected function getSuites($conf = null)
+    protected function getSuites($conf)
     {
+        Configuration::config($conf);
         return Configuration::suites();
     }
 
@@ -45,22 +46,5 @@ trait Config
             $updatedConfig = array_merge_recursive($updatedConfig, $config);
         }
         return Configuration::append($updatedConfig);
-    }
-
-    protected function enableExtensions($extensions)
-    {
-        $config = ['extensions' => ['enabled' => []]];
-        foreach ($extensions as $name) {
-            if (!class_exists($name)) {
-                $className = 'Codeception\\Extension\\' . ucfirst($name);
-                if (!class_exists($className)) {
-                    throw new InvalidOptionException("Extension $name can't be loaded (tried by $name and $className)");
-                }
-                $config['extensions']['enabled'][] = $className;
-                continue;
-            }
-            $config['extensions']['enabled'][] = $name;
-        }
-        return Configuration::append($config);
     }
 }

@@ -57,6 +57,7 @@ class ConfigValidate extends Command
         $this->addStyles($output);
 
         if ($suite = $input->getArgument('suite')) {
+
             $output->write("Validating <bold>$suite</bold> config... ");
             $config = $this->getSuiteConfig($suite, $input->getOption('config'));
             $output->writeln("Ok");
@@ -67,7 +68,7 @@ class ConfigValidate extends Command
         }
 
         $output->write("Validating global config... ");
-        $config = $this->getGlobalConfig();
+        $config = Configuration::config($input->getOption('config'));
         $output->writeln($input->getOption('override'));
         if (count($input->getOption('override'))) {
             $config = $this->overrideConfig($input->getOption('override'));
@@ -89,7 +90,7 @@ class ConfigValidate extends Command
 
         foreach ($suites as $suite) {
             $output->write("Validating suite <bold>$suite</bold>... ");
-            $this->getSuiteConfig($suite);
+            $this->getSuiteConfig($suite, $input->getOption('config'));
             $output->writeln('Ok');
         }
 

@@ -30,19 +30,19 @@ class Verify {
         $this->isFileExpectation = $isFileExpectation;
     }
 
-    public function equals($expected, $delta = 0)
+    public function equals($expected)
     {
         if ( ! $this->isFileExpectation ) {
-            a::assertEquals($expected, $this->actual, $this->description, $delta);
+            a::assertEquals($expected, $this->actual, $this->description);
         } else {
             a::assertFileEquals($expected, $this->actual, $this->description);
         }
     }
 
-    public function notEquals($expected, $delta = 0)
+    public function notEquals($expected)
     {
         if ( ! $this->isFileExpectation ) {
-            a::assertNotEquals($expected, $this->actual, $this->description, $delta);
+            a::assertNotEquals($expected, $this->actual, $this->description);
         } else {
             a::assertFileNotEquals($expected, $this->actual, $this->description);
         }
