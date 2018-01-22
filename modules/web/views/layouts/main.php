@@ -59,6 +59,9 @@ $upload_config = Yii::$app->params['upload'];
                     <a href="<?=UrlService::buildWebUrl("/finance/index");?>"><i class="fa fa-rmb fa-lg"></i> <span class="nav-label">财务管理</span></a>
                 </li>
                 <li class="market">
+                    <a href="<?=UrlService::buildWebUrl("/channel/index");?>"><i class="fa fa-share-alt fa-lg"></i> <span class="nav-label">推广渠道</span></a>
+                </li>
+                <li class="market">
                     <a href="<?=UrlService::buildWebUrl("/qrcode/index");?>"><i class="fa fa-share-alt fa-lg"></i> <span class="nav-label">营销渠道</span></a>
                 </li>
                 <li class="stat">

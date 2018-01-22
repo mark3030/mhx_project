@@ -3,7 +3,7 @@ use \app\common\services\UrlService;
 use \app\common\services\UtilService;
 use \app\common\services\StaticService;
 use \app\common\services\ConstantMapService;
-StaticService::includeAppJsStatic( "/js/web/member/index.js",\app\assets\WebAsset::className() );
+StaticService::includeAppJsStatic( "/js/web/role/index.js",\app\assets\WebAsset::className() );
 ?>
 
 <?php echo \Yii::$app->view->renderFile("@app/modules/web/views/common/tab_role.php", ['current' => 'index']); ?>
@@ -54,16 +54,13 @@ StaticService::includeAppJsStatic( "/js/web/member/index.js",\app\assets\WebAsse
 			<?php if( $list ):?>
 				<?php foreach( $list as $_item ):?>
                     <tr>
-                        <td><img alt="image" class="img-circle" src="<?= $_item['avatar'] ;?>" style="width: 40px;height: 40px;"></td>
-                        <td><?= $_item['nickname'];?></td>
-                        <td><?= $_item['mobile'] ;?></td>
+                        <td><?= $_item['name'];?></td>
+                        <td><?= $_item['created_time'] ;?></td>
                         <td><?= $_item['status_desc'] ;?></td>
                         <td>
-                            <a  href="<?=UrlService::buildWebUrl("/member/info",[ 'id' => $_item['id'] ] );?>">
-                                <i class="fa fa-eye fa-lg"></i>
-                            </a>
+                            <a data-toggle="modal" data-target="#roles_model" data-roles="<?=$_item['roles'];?>"> <i class="fa fa-eye fa-lg"></i> </a>
 							<?php if( $_item['status'] ):?>
-                                <a class="m-l" href="<?=UrlService::buildWebUrl("/member/set",[ 'id' => $_item['id'] ]);?>">
+                                <a class="m-l" href="<?=UrlService::buildWebUrl("/role/set",[ 'id' => $_item['id'] ]);?>">
                                     <i class="fa fa-edit fa-lg"></i>
                                 </a>
 
@@ -85,8 +82,26 @@ StaticService::includeAppJsStatic( "/js/web/member/index.js",\app\assets\WebAsse
         </table>
 		<?php echo \Yii::$app->view->renderFile("@app/modules/web/views/common/pagination.php", [
 			'pages' => $pages,
-			'url' => '/member/index'
+			'url' => '/role/index'
 		]); ?>
 
+    </div>
+</div>
+
+<div class="modal fade" id="roles_model" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">所配权限</h4>
+            </div>
+            <div class="modal-body">
+                <input class="form-control" type="text"  readonly>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+            </div>
+        </div>
     </div>
 </div>

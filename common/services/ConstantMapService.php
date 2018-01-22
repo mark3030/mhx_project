@@ -16,8 +16,8 @@ class ConstantMapService
 
     public static $status_default = -1;
     public static $status_mapping = [
-        1 => '正常',
-        0 => '已删除'
+        1 => '已启用',
+        0 => '已禁用 '
     ];
 
     public static $sex_mapping = [
