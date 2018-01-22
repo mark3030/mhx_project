@@ -5,6 +5,7 @@ use Codeception\Lib\Framework;
 use Codeception\TestInterface;
 use Codeception\Configuration;
 use Codeception\Lib\Connector\ZendExpressive as ZendExpressiveConnector;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * This module allows you to run tests inside Zend Expressive.
@@ -53,22 +54,10 @@ class ZendExpressive extends Framework
     public function _initialize()
     {
         $cwd = getcwd();
-        $projectDir = Configuration::projectDir();
-        chdir($projectDir);
-        $this->container = require $projectDir . $this->config['container'];
-        $app = $this->container->get('Zend\Expressive\Application');
-
-        $pipelineFile = $projectDir . 'config/pipeline.php';
-        if (file_exists($pipelineFile)) {
-            require $pipelineFile;
-        }
-        $routesFile = $projectDir . 'config/routes.php';
-        if (file_exists($routesFile)) {
-            require $routesFile;
-        }
+        chdir(Configuration::projectDir());
+        $this->container = require Configuration::projectDir() . $this->config['container'];
         chdir($cwd);
-
-        $this->application = $app;
+        $this->application = $this->container->get('Zend\Expressive\Application');
         $this->initResponseCollector();
     }
 

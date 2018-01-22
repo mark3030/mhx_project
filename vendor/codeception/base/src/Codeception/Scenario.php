@@ -3,6 +3,8 @@ namespace Codeception;
 
 use Codeception\Event\StepEvent;
 use Codeception\Exception\ConditionalAssertionFailed;
+use Codeception\Lib\Notification;
+use Codeception\Step;
 use Codeception\Test\Metadata;
 
 class Scenario
@@ -151,18 +153,10 @@ class Scenario
     }
 
     /**
-     * @param Step\Meta $metaStep
+     * @param null $metaStep
      */
     public function setMetaStep($metaStep)
     {
         $this->metaStep = $metaStep;
-    }
-
-    /**
-     * @return Step\Meta
-     */
-    public function getMetaStep()
-    {
-        return $this->metaStep;
     }
 }

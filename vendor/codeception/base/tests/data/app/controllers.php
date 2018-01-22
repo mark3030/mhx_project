@@ -162,7 +162,6 @@ class facebookController {
 
 class form {
     function GET($matches) {
-        data::set('query', $_GET);
         $url = strtolower($matches[1]);
         if (empty($matches[1])) {
             $url = 'index';
@@ -257,16 +256,5 @@ class basehref {
 class jserroronload {
     function GET() {
         include __DIR__.'/view/jserroronload.php';
-    }
-}
-
-class userAgent {
-    function GET() {
-        echo $_SERVER['HTTP_USER_AGENT'];
-    }
-}
-class minimal {
-    function GET() {
-        include __DIR__.'/view/minimal.php';
     }
 }

@@ -2,11 +2,11 @@
 require_once __DIR__.'/vendor/autoload.php';
 
 use Symfony\Component\Finder\Finder;
-use Robo\Task\Development\GenerateMarkdownDoc as Doc;
+use \Robo\Task\Development\GenerateMarkdownDoc as Doc;
 
 class RoboFile extends \Robo\Tasks
 {
-    const STABLE_BRANCH = '2.3';
+    const STABLE_BRANCH = '2.2';
     const REPO_BLOB_URL = 'https://github.com/Codeception/Codeception/blob';
 
     public function release()
@@ -15,13 +15,14 @@ class RoboFile extends \Robo\Tasks
         $this->update();
         $this->buildDocs();
         $this->publishDocs();
+
+        $this->buildPhar54();
         $this->buildPhar();
-        $this->buildPhar5();
+        $this->revertComposerJsonChanges();
         $this->publishPhar();
         $this->publishGit();
         $this->publishBase(null, \Codeception\Codecept::VERSION);
         $this->versionBump();
-        $this->update(); //update dependencies after release, because buildPhar5 set them to old versions
     }
 
     public function versionBump($version = '')
@@ -154,11 +155,11 @@ class RoboFile extends \Robo\Tasks
         $this->taskComposerUpdate()->run();
     }
 
-    private function installDependenciesForPhp70()
+    private function installDependenciesForPhp56()
     {
         $this->taskReplaceInFile('composer.json')
             ->regex('/"platform": \{.*?\}/')
-            ->to('"platform": {"php": "7.0.0"}')
+            ->to('"platform": {"php": "5.6.0"}')
             ->run();
 
         $this->taskComposerUpdate()->run();
@@ -179,23 +180,21 @@ class RoboFile extends \Robo\Tasks
      */
     public function buildPhar()
     {
-        $this->installDependenciesForPhp70();
         $this->packPhar('package/codecept.phar');
-        $this->revertComposerJsonChanges();
     }
 
     /**
      * @desc creates codecept.phar with Guzzle 5.3 and Symfony 2.8
      * @throws Exception
      */
-    public function buildPhar5()
+    public function buildPhar54()
     {
         if (!file_exists('package/php54')) {
             mkdir('package/php54');
         }
         $this->installDependenciesForPhp54();
         $this->packPhar('package/php54/codecept.phar');
-        $this->revertComposerJsonChanges();
+        $this->installDependenciesForPhp56();
     }
 
     private function packPhar($pharFileName)
@@ -262,7 +261,6 @@ class RoboFile extends \Robo\Tasks
         $pharTask->addFile('autoload.php', 'autoload.php')
             ->addFile('codecept', 'package/bin')
             ->addFile('shim.php', 'shim.php')
-            ->addFile('phpunit5-loggers.php', 'phpunit5-loggers.php')
             ->run();
         
         $code = $this->taskExec('php ' . $pharFileName)->run()->getExitCode();
@@ -367,7 +365,7 @@ class RoboFile extends \Robo\Tasks
     public function buildDocsApi()
     {
         $this->say("API Classes");
-        $apiClasses = ['Codeception\Module', 'Codeception\InitTemplate'];
+        $apiClasses = ['Codeception\Module'];
 
         foreach ($apiClasses as $apiClass) {
             $name = (new ReflectionClass($apiClass))->getShortName();
@@ -405,16 +403,15 @@ class RoboFile extends \Robo\Tasks
         $extensions = Finder::create()->files()->sortByName()->name('*.php')->in(__DIR__ . '/ext');
 
         $extGenerator= $this->taskGenDoc(__DIR__.'/ext/README.md');
-        foreach ($extensions as $extension) {
-            $extensionName = basename(substr($extension, 0, -4));
-            $className = '\Codeception\Extension\\' . $extensionName;
+        foreach ($extensions as $command) {
+            $commandName = basename(substr($command, 0, -4));
+            $className = '\Codeception\Extension\\' . $commandName;
             $extGenerator->docClass($className);
         }
         $extGenerator
             ->prepend("# Official Extensions\n")
-            ->processClassSignature(function (ReflectionClass $r, $text) {
-                $name = $r->getShortName();
-                return "## $name\n\n[See Source](" . self::REPO_BLOB_URL."/".self::STABLE_BRANCH. "/ext/$name.php)";
+            ->processClassSignature(function ($r, $text) {
+                return "## ".$r->getName();
             })
             ->filterMethods(function (ReflectionMethod $r) {
                 return false;
@@ -438,9 +435,9 @@ class RoboFile extends \Robo\Tasks
             if (!is_dir('php54')) {
                 mkdir('php54');
             }
-            copy('../php54/codecept.phar', 'php5/codecept.phar');
+            copy('../php54/codecept.phar', 'php54/codecept.phar');
             $this->taskExec('git add codecept.phar')->run();
-            $this->taskExec('git add php5/codecept.phar')->run();
+            $this->taskExec('git add php54/codecept.phar')->run();
         }
 
         $this->taskFileSystemStack()
@@ -487,11 +484,7 @@ class RoboFile extends \Robo\Tasks
 
             if (file_exists("releases/$releaseName/php54/codecept.phar")) {
                 $downloadUrl = "http://codeception.com/releases/$releaseName/php54/codecept.phar";
-                if (version_compare($releaseName, '2.3.0', '>=')) {
-                    $versionLine .= ", [for PHP 5.4 - 5.6]($downloadUrl)";
-                } else {
-                    $versionLine .= ", [for PHP 5.4 or 5.5]($downloadUrl)";
-                }
+                $versionLine .= ", [for PHP 5.4 or 5.5]($downloadUrl)";
             }
 
             $releaseFile->line($versionLine);
@@ -523,7 +516,6 @@ class RoboFile extends \Robo\Tasks
 
         chdir('../..');
 
-        $this->say('building changelog');
         $this->taskWriteToFile('package/site/changelog.markdown')
             ->line('---')
             ->line('layout: page')
@@ -533,8 +525,6 @@ class RoboFile extends \Robo\Tasks
             ->line(
                 '<div class="alert alert-warning">Download specific version at <a href="/builds">builds page</a></div>'
             )
-            ->line('')
-            ->line('# Changelog')
             ->line('')
             ->line($this->processChangelog())
             ->run();
@@ -578,7 +568,7 @@ class RoboFile extends \Robo\Tasks
 
             copy($doc->getPathname(), 'package/site/' . $newfile);
 
-            $highlight_languages = implode('|', ['php', 'html', 'bash', 'yaml', 'json', 'xml', 'sql', 'gherkin']);
+            $highlight_languages = implode('|', ['php', 'html', 'bash', 'yaml', 'json', 'xml', 'sql']);
             $contents = preg_replace(
                 "~```\s?($highlight_languages)\b(.*?)```~ms",
                 "{% highlight $1 %}\n$2\n{% endhighlight %}",
@@ -710,22 +700,10 @@ class RoboFile extends \Robo\Tasks
 
     protected function processChangelog()
     {
-        $sortByVersionDesc = function (\SplFileInfo $a, \SplFileInfo $b) {
-            $pattern = '/^CHANGELOG-(\d+\.\d+).md$/';
-            if (preg_match($pattern, $a->getBasename(), $matches1) && preg_match($pattern, $b->getBasename(), $matches2)) {
-                return version_compare($matches1[1], $matches2[1]) * -1;
-            }
-            return 0;
-        };
-
-        $changelogFiles = Finder::create()->name('CHANGELOG-*.md')->in('.')->depth(0)->sort($sortByVersionDesc);
-        $changelog = '';
-        foreach ($changelogFiles as $file) {
-            $changelog .= $file->getContents();
-        }
+        $changelog = file_get_contents('CHANGELOG.md');
 
         //user
-        $changelog = preg_replace('~\s@([\w-]+)~', ' **[$1](https://github.com/$1)**', $changelog);
+        $changelog = preg_replace('~\s@(\w+)~', ' **[$1](https://github.com/$1)**', $changelog);
 
         //issue
         $changelog = preg_replace(
@@ -891,17 +869,17 @@ class RoboFile extends \Robo\Tasks
 
         $this->taskGenDoc($file)
             ->docClass($className)
-            ->filterMethods(function (ReflectionMethod $r) use ($all, $className) {
+            ->filterMethods(function(ReflectionMethod $r) use ($all, $className) {
                 return $all || $r->isPublic();
             })
             ->append(
                 '<p>&nbsp;</p><div class="alert alert-warning">Reference is taken from the source code. '
                 . '<a href="' . $source . '">Help us to improve documentation. Edit module reference</a></div>'
             )
-            ->processPropertySignature(function ($r) {
+            ->processPropertySignature(function($r) {
                 return "\n#### $" . $r->name. "\n\n";
             })
-            ->processPropertyDocBlock(function ($r, $text) {
+            ->processPropertyDocBlock(function($r, $text) {
                 $modifiers = implode(' ', \Reflection::getModifierNames($r->getModifiers()));
                 $text = ' *' . $modifiers . '* **$' . $r->name . "**\n" . $text;
                 $text = preg_replace("~@(.*?)\s(.*)~", 'type `$2`', $text);
@@ -912,7 +890,7 @@ class RoboFile extends \Robo\Tasks
                     return $text . "\n";
                 }
             )
-            ->processMethodSignature(function ($r, $text) {
+            ->processMethodSignature(function($r, $text) {
                 return "#### {$r->name}()\n\n" . ltrim($text, '#');
             })
             ->processMethodDocBlock(

@@ -3,7 +3,7 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'BaseCommandRunner.php';
 
 class GenerateSuiteTest extends BaseCommandRunner
 {
-    public $config = ['actor_suffix' => 'Guy'];
+    public $config = ['actor' => 'Guy'];
 
     protected function setUp()
     {
@@ -12,38 +12,44 @@ class GenerateSuiteTest extends BaseCommandRunner
 
     public function testBasic()
     {
-        $this->execute(array('suite' => 'shire', 'actor' => 'Hobbit'), false);
+        $this->execute(array('suite' => 'shire', 'actor' => 'Hobbit'));
 
-        $configFile = $this->log[1];
+        $configFile = $this->log[2];
 
         $this->assertEquals(\Codeception\Configuration::projectDir().'tests/shire.suite.yml', $configFile['filename']);
         $conf = \Symfony\Component\Yaml\Yaml::parse($configFile['content']);
-        $this->assertEquals('Hobbit', $conf['actor']);
-        $this->assertContains('\Helper\Shire', $conf['modules']['enabled']);
+        $this->assertEquals('HobbitGuy', $conf['class_name']);
+        $this->assertContains('\Helper\Hobbit', $conf['modules']['enabled']);
         $this->assertContains('Suite shire generated', $this->output);
 
-        $actor = $this->log[2];
-        $this->assertEquals(\Codeception\Configuration::supportDir().'Hobbit.php', $actor['filename']);
-        $this->assertContains('class Hobbit extends \Codeception\Actor', $actor['content']);
+        $actor = $this->log[3];
+        $this->assertEquals(\Codeception\Configuration::supportDir().'HobbitGuy.php', $actor['filename']);
+        $this->assertContains('class HobbitGuy extends \Codeception\Actor', $actor['content']);
 
 
-        $helper = $this->log[0];
-        $this->assertEquals(\Codeception\Configuration::supportDir().'Helper/Shire.php', $helper['filename']);
+        $helper = $this->log[1];
+        $this->assertEquals(\Codeception\Configuration::supportDir().'Helper/Hobbit.php', $helper['filename']);
         $this->assertContains('namespace Helper;', $helper['content']);
-        $this->assertContains('class Shire extends \Codeception\Module', $helper['content']);
+        $this->assertContains('class Hobbit extends \Codeception\Module', $helper['content']);
+
+        $bootstrap = $this->log[0];
+        $this->assertEquals(
+            \Codeception\Configuration::projectDir().'tests/shire/_bootstrap.php',
+            $bootstrap['filename']
+        );
     }
 
     public function testGuyWithSuffix()
     {
-        $this->execute(array('suite' => 'shire', 'actor' => 'HobbitTester'), false);
+        $this->execute(array('suite' => 'shire', 'actor' => 'HobbitGuy'));
 
-        $configFile = $this->log[1];
+        $configFile = $this->log[2];
         $conf = \Symfony\Component\Yaml\Yaml::parse($configFile['content']);
-        $this->assertEquals('HobbitTester', $conf['actor']);
-        $this->assertContains('\Helper\Shire', $conf['modules']['enabled']);
+        $this->assertEquals('HobbitGuy', $conf['class_name']);
+        $this->assertContains('\Helper\Hobbit', $conf['modules']['enabled']);
 
-        $helper = $this->log[0];
-        $this->assertEquals(\Codeception\Configuration::supportDir().'Helper/Shire.php', $helper['filename']);
-        $this->assertContains('class Shire extends \Codeception\Module', $helper['content']);
+        $helper = $this->log[1];
+        $this->assertEquals(\Codeception\Configuration::supportDir().'Helper/Hobbit.php', $helper['filename']);
+        $this->assertContains('class Hobbit extends \Codeception\Module', $helper['content']);
     }
 }

@@ -1,7 +1,6 @@
 <?php
 namespace Codeception\Util;
 
-use Facebook\WebDriver\WebDriverBy;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\CssSelector\Exception\ParseException;
 use Symfony\Component\CssSelector\XPath\Translator;
@@ -229,7 +228,8 @@ class Locator
     /**
      * Checks that a string is valid CSS class
      *
-     * @param $class
+     * @param $id
+     *
      * @return bool
      */
     public static function isClass($class)
@@ -275,8 +275,8 @@ class Locator
      * Locator::elementAt('table#grind>tr', -2); // previous than last row
      * ```
      *
-     * @param string $element CSS or XPath locator
-     * @param int $position xpath index
+     * @param $element CSS or XPath locator
+     * @param $position xpath index
      *
      * @return mixed
      */
@@ -354,7 +354,7 @@ class Locator
             return "$type '$locator'";
         }
         if (class_exists('\Facebook\WebDriver\WebDriverBy')) {
-            if ($selector instanceof WebDriverBy) {
+            if ($selector instanceof \Facebook\WebDriver\WebDriverBy) {
                 $type = $selector->getMechanism();
                 $locator = $selector->getValue();
                 return "$type '$locator'";

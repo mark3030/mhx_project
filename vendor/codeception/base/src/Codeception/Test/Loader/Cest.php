@@ -2,8 +2,10 @@
 namespace Codeception\Test\Loader;
 
 use Codeception\Exception\TestParseException;
+use Codeception\Lib\ExampleSuite;
 use Codeception\Lib\Parser;
 use Codeception\Test\Cest as CestFormat;
+use Codeception\Test\Descriptor;
 use Codeception\Util\Annotation;
 use Codeception\Util\ReflectionHelper;
 
@@ -53,13 +55,8 @@ class Cest implements LoaderInterface
                     );
                 }
 
-                // dataProvider Annotation
-                $dataMethod = Annotation::forMethod($testClass, $method)->fetch('dataProvider');
-                // lowercase for back compatible
-                if (empty($dataMethod)) {
-                    $dataMethod = Annotation::forMethod($testClass, $method)->fetch('dataprovider');
-                }
-
+                // dataprovider Annotation
+                $dataMethod = Annotation::forMethod($testClass, $method)->fetch('dataprovider');
                 if (!empty($dataMethod)) {
                     try {
                         $data = ReflectionHelper::invokePrivateMethod($unit, $dataMethod);

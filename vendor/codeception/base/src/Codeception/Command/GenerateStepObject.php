@@ -40,11 +40,11 @@ class GenerateStepObject extends Command
     {
         $suite = $input->getArgument('suite');
         $step = $input->getArgument('step');
-        $config = $this->getSuiteConfig($suite);
+        $config = $this->getSuiteConfig($suite, $input->getOption('config'));
 
-        $class = $this->getShortClassName($step);
+        $class = $this->getClassName($step);
 
-        $path = $this->createDirectoryFor(Configuration::supportDir() . 'Step' . DIRECTORY_SEPARATOR . ucfirst($suite), $step);
+        $path = $this->buildPath(Configuration::supportDir() . 'Step' . DIRECTORY_SEPARATOR . ucfirst($suite), $step);
 
         $dialog = $this->getHelperSet()->get('question');
         $filename = $path . $class . '.php';
@@ -64,7 +64,7 @@ class GenerateStepObject extends Command
             } while ($action);
         }
 
-        $res = $this->createFile($filename, $gen->produce());
+        $res = $this->save($filename, $gen->produce());
 
         if (!$res) {
             $output->writeln("<error>StepObject $filename already exists</error>");

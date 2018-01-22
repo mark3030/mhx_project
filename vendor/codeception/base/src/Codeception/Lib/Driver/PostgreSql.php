@@ -51,13 +51,10 @@ class PostgreSql extends Db
             $query .= "\n" . rtrim($sqlLine);
 
             if (!$dollarsOpen && substr($query, -1 * $delimiterLength, $delimiterLength) == $delimiter) {
-                $this->sqlQuery(substr($query, 0, -1 * $delimiterLength));
+                $this->sqlToRun = substr($query, 0, -1 * $delimiterLength);
+                $this->sqlQuery($this->sqlToRun);
                 $query = '';
             }
-        }
-
-        if ($query !== '') {
-            $this->sqlQuery($query);
         }
     }
 

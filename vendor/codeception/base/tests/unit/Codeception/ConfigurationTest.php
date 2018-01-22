@@ -1,5 +1,6 @@
 <?php
 
+use Codeception\Util\Stub;
 
 class ConfigurationTest extends \PHPUnit_Framework_TestCase
 {
