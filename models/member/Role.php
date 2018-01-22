@@ -34,4 +34,8 @@ class Role extends \yii\db\ActiveRecord {
         }
         return trim($roleNames, '  |');
     }
+
+    public static function getRoleItem($condition = [],$item = []){
+        return self::find()->where($condition)->select($item)->one();
+    }
 }

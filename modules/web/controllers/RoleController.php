@@ -30,7 +30,7 @@ class RoleController extends BaseController {
         if ($status > ConstantMapService::$status_default) {
             $query->andWhere(['status' => $status]);
         }
-
+        $query->andWhere(['org_id'=>$this->current_user['org_id']]);
 
         //分页功能,需要两个参数，1：符合条件的总记录数量  2：每页展示的数量
         //60,60 ~ 11,10 - 1
@@ -146,16 +146,16 @@ class RoleController extends BaseController {
         $id = $this->post('id', []);
         $act = trim($this->post('act', ''));
         if (!$id) {
-            return $this->renderJSON([], "请选择要操作的会员账号号~~", -1);
+            return $this->renderJSON([], "请选择要操作的角色", -1);
         }
 
         if (!in_array($act, ['remove', 'recover'])) {
-            return $this->renderJSON([], "操作有误，请重试~~", -1);
+            return $this->renderJSON([], "操作有误，请重试", -1);
         }
 
-        $info = Member::find()->where(['id' => $id])->one();
+        $info = Role::find()->where(['id' => $id])->one();
         if (!$info) {
-            return $this->renderJSON([], "指定会员账号不存在~~", -1);
+            return $this->renderJSON([], "指定角色不存在", -1);
         }
 
         switch ($act) {
