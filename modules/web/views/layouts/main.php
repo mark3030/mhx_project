@@ -46,6 +46,9 @@ $upload_config = Yii::$app->params['upload'];
                         <a href="<?=UrlService::buildWebUrl("/org/index");?>"><i class="fa fa-users fa-lg"></i> <span class="nav-label">机构管理</span></a>
                     </li>
                 <?php endif; ?>
+                <li class="risk">
+                    <a href="<?=UrlService::buildWebUrl("/risk/index");?>"><i class="fa fa-filter fa-lg"></i> <span class="nav-label">风控查询</span></a>
+                </li>
                 <li class="brand">
                     <a href="<?=UrlService::buildWebUrl("/brand/info");?>"><i class="fa fa-cog fa-lg"></i> <span class="nav-label">品牌设置</span></a>
                 </li>

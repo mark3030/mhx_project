@@ -110,6 +110,10 @@ var common_ops = {
             nav_name = "stat";
         }
 
+        if(  pathname.indexOf("/web/risk") > -1  ){
+            nav_name = "risk";
+        }
+
 
 
         if( nav_name == null ){
