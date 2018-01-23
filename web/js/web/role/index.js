@@ -30,13 +30,13 @@ var role_index_ops = {
                     },
                     dataType: 'json',
                     success: function (res) {
-                        var callback = null;
+                        //var callback = null;
                         if (res.code == 200) {
-                            callback = function () {
+                           // callback = function () {
                                 window.location.href = window.location.href;
-                            }
+                           // }
                         }
-                        common_ops.alert(res.msg, callback);
+                        //common_ops.alert(res.msg, callback);
                     }
                 });
             },
