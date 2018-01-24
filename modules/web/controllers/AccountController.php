@@ -45,13 +45,17 @@ class AccountController extends BaseController
         $list = $query->orderBy(['uid' => SORT_DESC])
             ->offset(($p - 1) * $this->page_size)
             ->limit($this->page_size)
+            ->asArray()
             ->all();
-
         foreach ($list as &$val) {
             $condition = ['org_id'=>$this->current_user['org_id'],'id'=>$val['role']];
             $items = ['name'];
             $role_item = Role::getRoleItem($condition,$items);
             $val['role'] = $role_item['name'];
+            $condition = ['uid'=>$val['leader_id']];
+            $items = ['nickname'];
+            $role_item = User::getUserItem($condition,$items);
+            $val['leader'] = $role_item['nickname'];
         }
         return $this->render("index", [
             'list' => $list,
@@ -78,10 +82,17 @@ class AccountController extends BaseController
             if ($id) {
                 $info = User::find()->where(['uid' => $id])->one();
             }
-            $role_list = Role::find()->where(['org_id'=>$this->current_user['org_id'],'status'=>1])->select(['id','name'])->all();
+            $role_list = Role::find()->where(['org_id'=>$this->current_user['org_id'],'status'=>1])
+                ->select(['id','name'])->orderBy(['created_time' => SORT_DESC])->all();
+            $account_model = User::find()->where(['org_id'=>$this->current_user['org_id'],'status'=>1]);
+            if ($id) {
+                $account_model = $account_model->andWhere(['!=', 'uid', $id]);
+            }
+            $account_list = $account_model->select(['uid','nickname'])->orderBy(['created_time' => SORT_DESC])->all();
             return $this->render("set", [
                 'info' => $info,
-                'role_list'=>$role_list
+                'role_list'=>$role_list,
+                'account_list'=>$account_list
             ]);
         }
 
@@ -90,6 +101,7 @@ class AccountController extends BaseController
         $mobile = trim($this->post("mobile", ""));
         $ident = trim($this->post("ident", ""));
         $role = trim($this->post("role", ''));
+        $leader = trim($this->post("leader", ''));
         $login_name = trim($this->post("login_name", ""));
         $login_pwd = trim($this->post("login_pwd", ""));
         $date_now = date("Y-m-d H:i:s");
@@ -135,6 +147,7 @@ class AccountController extends BaseController
         $model_user->mobile = $mobile;
         $model_user->ident = $ident;
         $model_user->role = $role;
+        $model_user->leader_id = $leader;
         $model_user->avatar = ConstantMapService::$default_avatar;
         $model_user->login_name = $login_name;
         if ($login_pwd != ConstantMapService::$default_password) {

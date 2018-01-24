@@ -15,6 +15,7 @@ use Yii;
  * @property integer $sex
  * @property string $avatar
  * @property string $role
+ * @property string $leader_id
  * @property string $login_name
  * @property string $login_pwd
  * @property string $login_salt
@@ -63,6 +64,10 @@ class User extends \yii\db\ActiveRecord
             return false;
         }
         return true;
+    }
+
+    public static function getUserItem($condition = [],$item = []){
+        return self::find()->where($condition)->select($item)->one();
     }
 
 }

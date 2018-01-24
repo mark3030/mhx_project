@@ -36,7 +36,7 @@ StaticService::includeAppJsStatic( "/js/web/account/set.js",\app\assets\WebAsset
 				<label class="col-lg-3 control-label">角色:</label>
 				<div class="col-lg-7 btn-group">
 					<?php if($role_list):?>
-						<select class="form-control selector">
+						<select class="form-control role_selector">
 							<?php if($role_list):?>
 								<?php foreach ($role_list as $role):?>
 									<option value="<?= $role['id'] ?>"><?= $role['name'] ?></option>
@@ -44,6 +44,22 @@ StaticService::includeAppJsStatic( "/js/web/account/set.js",\app\assets\WebAsset
 						</select>
 				    <?php endif;else: ?>
 						<p class="form-control text-danger">请进行角色添加</p>
+					<?php endif; ?>
+				</div>
+			</div>
+			<div class="hr-line-dashed"></div>
+			<div class="form-group" data-toggle="buttons">
+				<label class="col-lg-3 control-label">上级:</label>
+				<div class="col-lg-7 btn-group">
+					<?php if($account_list):?>
+						<select class="form-control leader_selector">
+						<?php if($account_list):?>
+							<?php foreach ($account_list as $account):?>
+								<option value="<?= $account['uid'] ?>"><?= $account['nickname'] ?></option>
+							<?php endforeach;?>
+							</select>
+						<?php endif;else: ?>
+						<p class="form-control text-danger">暂无员工</p>
 					<?php endif; ?>
 				</div>
 			</div>

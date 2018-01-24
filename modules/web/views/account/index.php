@@ -49,6 +49,7 @@ StaticService::includeAppJsStatic( "/js/web/account/index.js",\app\assets\WebAss
                 <th>手机</th>
                 <th>身份证</th>
                 <th>角色</th>
+                <th>上级</th>
                 <th>操作</th>
             </tr>
             </thead>
@@ -60,6 +61,7 @@ StaticService::includeAppJsStatic( "/js/web/account/index.js",\app\assets\WebAss
                     <td><?=UtilService::encode( $_item['mobile'] );?></td>
                     <td><?=UtilService::encode( $_item['ident'] );?></td>
                     <td><?=UtilService::encode( $_item['role'] );?></td>
+                    <td><?=UtilService::encode( $_item['leader'] );?></td>
                     <td>
                         <a  href="<?=UrlService::buildWebUrl("/account/info",[ 'id' => $_item['uid'] ] );?>">
                             <i class="fa fa-eye fa-lg"></i>

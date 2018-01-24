@@ -19,8 +19,10 @@ var account_set_ops = {
             var mobile = mobile_target.val();
             var ident_target = $(".wrap_account_set input[name=ident]");
             var ident = ident_target.val();
-            var role_target= $(".wrap_account_set .selector");
+            var role_target= $(".wrap_account_set .role_selector");
             var role = role_target.find("option:selected").val();
+            var leader_target= $(".wrap_account_set .leader_selector");
+            var leader = leader_target.find("option:selected").val();
             var login_name_target = $(".wrap_account_set input[name=login_name]");
             var login_name = login_name_target.val();
             var login_pwd_target = $(".wrap_account_set input[name=login_pwd]");
@@ -58,6 +60,7 @@ var account_set_ops = {
                 mobile:mobile,
                 ident:ident,
                 role:role,
+                leader:leader,
                 login_name:login_name,
                 login_pwd:login_pwd,
                 id:$(".wrap_account_set input[name=id]").val()
