@@ -19,7 +19,6 @@ class UploadService extends  BaseService{
         if( !$filename ){
             return self::_err("参数文件名是必要参数~~");
         }
-
         if( !$filepath || !file_exists($filepath) ){
             return self::_err("请传入合法的参数filepath~~");
         }

@@ -2,20 +2,23 @@
 namespace app\modules\web\controllers;
 
 
+use app\common\services\ConstantMapService;
 use app\common\services\weixin\RequestService;
 use app\models\market\ChannelQrcode;
 use app\models\market\MarketQrcode;
 use app\models\market\Org;
 use app\modules\web\controllers\common\BaseController;
 
-class ChannelController extends BaseController {
+class ChannelController extends BaseController
+{
 
-    public function actionIndex() {
+    public function actionIndex()
+    {
         $mix_kw = trim($this->get("mix_kw", ""));
         $p = intval($this->get("p", 1));
         $p = ($p > 0) ? $p : 1;
 
-        $query = ChannelQrcode::find();
+        $query = ChannelQrcode::find()->where(['org_id' => $this->current_user['org_id']]);
         if ($mix_kw) {
             $where_name = ['LIKE', 'name', '%' . strtr($mix_kw, ['%' => '\%', '_' => '\_', '\\' => '\\\\']) . '%', false];
             $query->andWhere($where_name);
@@ -35,32 +38,35 @@ class ChannelController extends BaseController {
 
         return $this->render(
             "index", [
-            'list' => $list,
-            'search_conditions' => [
-                'mix_kw' => $mix_kw,
-                'p' => $p
-            ],
-            'pages' => [
-                'total_count' => $total_res_count,
-                'page_size' => $this->page_size,
-                'total_page' => $total_page,
-                'p' => $p
+                'list' => $list,
+                'search_conditions' => [
+                    'mix_kw' => $mix_kw,
+                    'p' => $p
+                ],
+                'pages' => [
+                    'total_count' => $total_res_count,
+                    'page_size' => $this->page_size,
+                    'total_page' => $total_page,
+                    'p' => $p
+                ]
             ]
-        ]
         );
     }
 
-    public function actionSet() {
+    public function actionSet()
+    {
         if (\Yii::$app->request->isGet) {
             $id = intval($this->get("id", 0));
             $info = [];
             if ($id) {
-                $info = ChannelQrcode::find()->where(['id' => $id])->one();
+                $info = ChannelQrcode::find()
+                    ->where(['id' => $id, 'org_id' => $this->current_user['org_id']])
+                    ->one();
             }
             return $this->render(
                 "set", [
-                'info' => $info
-            ]
+                    'info' => $info
+                ]
             );
         }
 
@@ -79,6 +85,7 @@ class ChannelController extends BaseController {
         } else {
             $model_qrcode = new ChannelQrcode();
             $model_qrcode->created_time = $date_now;
+            $model_qrcode->org_id = $this->current_user['org_id'];
         }
 
         $model_qrcode->name = $name;
@@ -92,6 +99,40 @@ class ChannelController extends BaseController {
 
         return $this->renderJSON([], "操作成功~~");
 
+    }
+
+    public function actionOps()
+    {
+        if (!\Yii::$app->request->isPost) {
+            return $this->renderJSON([], ConstantMapService::$default_syserror, -1);
+        }
+
+        $id = $this->post('id', []);
+        $act = trim($this->post('act', ''));
+        if (!$id) {
+            return $this->renderJSON([], "请选择要操作的渠道", -1);
+        }
+
+        if (!in_array($act, ['remove', 'recover'])) {
+            return $this->renderJSON([], "操作有误，请重试", -1);
+        }
+
+        $qrcode = ChannelQrcode::find()->where(['id' => $id, 'org_id' => $this->current_user['org_id']])->one();
+        if (!$qrcode) {
+            return $this->renderJSON([], "指定渠道不存在", -1);
+        }
+
+        switch ($act) {
+            case "remove":
+                $qrcode->status = 0;
+                break;
+            case "recover":
+                $qrcode->status = 1;
+                break;
+        }
+        $qrcode->updated_time = date("Y-m-d H:i:s");
+        $qrcode->update(0);
+        return $this->renderJSON([], "操作成功");
     }
 
 }

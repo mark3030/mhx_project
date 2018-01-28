@@ -2,13 +2,13 @@
 use \app\common\services\UrlService;
 $tab_list = [
 	'info' => [
-		'title' => '品牌信息',
+		'title' => '品牌信息   (在H5推广页面展示)',
 		'url' => '/brand/info'
 	],
-	'images' => [
-		'title' => '品牌相册',
-		'url' => '/brand/images'
-	]
+//	'images' => [
+//		'title' => '品牌相册',
+//		'url' => '/brand/images'
+//	]
 ];
 ?>
 <div class="row  border-bottom">

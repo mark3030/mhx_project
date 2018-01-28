@@ -40,7 +40,6 @@ class UploadController extends BaseController{
 		if(!in_array( strtolower( end( $tmp_file_extend ) ),$this->allow_file) ){
 			return "<script type='text/javascript'>{$call_back_target}.error('请上传图片文件,jpg,png,jpeg,gif');</script>";
 		}
-
 		$ret = UploadService::uploadByFile( $_FILES['pic']['name'],$_FILES['pic']['tmp_name'],$bucket );
 		if( !$ret ){
 			return "<script type='text/javascript'>{$call_back_target}.error('".UploadService::getLastErrorMsg()."');</script>";

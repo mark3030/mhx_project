@@ -22,6 +22,8 @@ class BaseController extends BaseWebController {
 		'm/pay/callback',
 		'm/product/ops',
 		'm/product/search',
+
+        'm/item/step',
 	];
 
 	/**

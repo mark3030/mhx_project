@@ -1,7 +1,7 @@
 ;
 var upload = {
     error:function(msg){
-        $.alert(msg);
+        common_ops.alert(msg);
     },
     success:function(file_key,type){
         if(!file_key){
@@ -84,13 +84,13 @@ var brand_set_ops = {
                 dataType:'json',
                 success:function(res){
                     btn_target.removeClass("disabled");
-                    var callback = null;
+                    //var callback = null;
                     if( res.code == 200 ){
-                        callback = function(){
+                       // callback = function(){
                             window.location.href = common_ops.buildWebUrl("/brand/info");
-                        }
+                        //}
                     }
-                    common_ops.alert( res.msg,callback );
+                    //common_ops.alert( res.msg,callback );
                 }
             });
         });

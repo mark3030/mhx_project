@@ -114,6 +114,14 @@ var common_ops = {
             nav_name = "risk";
         }
 
+        if(  pathname.indexOf("/web/channel") > -1  ){
+            nav_name = "channel";
+        }
+
+        if(  pathname.indexOf("/web/role") > -1  ){
+            nav_name = "role";
+        }
+
 
 
         if( nav_name == null ){

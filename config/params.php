@@ -1,5 +1,5 @@
 <?php
-$host = 'http://www.project.com';
+$host = 'http://localhost';
 return [
     'title' => '编程浪子微信图书商城',
 //	'domain' => [
@@ -18,7 +18,7 @@ return [
         'book' => '/uploads/book',
     ],
     'path' => [
-        'qrcode'=>'https://www.baidu.com/'
+        'qrcode'=>$host.'/m/item/step'
     ],
 
     'role'=>[

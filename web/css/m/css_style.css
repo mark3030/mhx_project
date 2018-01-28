@@ -626,6 +626,7 @@ input[type='checkbox']:checked + label:after, input[type='checkbox']:checked + l
 .pro_fixed .order_now_btn{background:#f20c11;width:35%; border:0;color:#fff;text-align:center;height:101%;position:absolute;right:0;top:-1px;font-size:1.6rem;border-radius: 0;}
 .pro_fixed .add_cart_btn{background:#f2a90c;width:35%; border:0;color:#fff;text-align:center;height:101%;position:absolute;right:35%;top:-1px;font-size:1.6rem;border-radius: 0;}
 
+.center{width:300px;height:150px;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);}
 
 
 

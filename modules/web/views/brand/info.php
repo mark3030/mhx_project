@@ -5,7 +5,11 @@ use \app\common\services\UtilService;
 
 <?php echo Yii::$app->view->renderFile("@app/modules/web/views/common/tab_brand.php",[ 'current' => 'info' ]);?>
 <div class="row m-t">
+<!--	<div class="col-lg-4 col-lg-offset-2 m-t">-->
+<!--		<p class="text-muted h4">注意：品牌设置会在H5推广页面展示</p>-->
+<!--	<div-->
 	<div class="col-lg-9 col-lg-offset-2 m-t">
+		<?php if($info): ?>
 		<dl class="dl-horizontal">
 			<dt>品牌名称</dt>
 			<dd><?=$info?UtilService::encode( $info['name'] ):'';?></dd>
@@ -24,5 +28,12 @@ use \app\common\services\UtilService;
 				<a href="<?=UrlService::buildWebUrl("/brand/set");?>" class="btn btn-outline btn-primary btn-w-m">编辑</a>
 			</dd>
 		</dl>
+		<?php else:?>
+			<dl class="dl-horizontal">
+				<dd>
+					<a href="<?=UrlService::buildWebUrl("/brand/set");?>" class="btn btn-outline btn-primary btn-w-m">编辑</a>
+				</dd>
+			</dl>
+		<?php endif;?>
 	</div>
 </div>

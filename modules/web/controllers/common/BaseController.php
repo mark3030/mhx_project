@@ -3,6 +3,7 @@
 namespace app\modules\web\controllers\common;
 use app\common\components\BaseWebController;
 use app\common\services\UrlService;
+use app\models\brand\BrandSetting;
 use app\models\User;
 use app\common\services\applog\ApplogService;
 class BaseController extends BaseWebController {
@@ -66,7 +67,9 @@ class BaseController extends BaseWebController {
 				$this->removeAuthToken();
 				return false;
 			}
+			$brand_info = BrandSetting::find()->where(['org_id'=>$org_id])->limit(1)->one();
 			$this->current_user = $user_info;
+            \Yii::$app->view->params['brand_info'] = $brand_info;
 			\Yii::$app->view->params['current_user'] = $user_info;
 			return true;
 		}

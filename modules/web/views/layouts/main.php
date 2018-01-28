@@ -61,7 +61,7 @@ $upload_config = Yii::$app->params['upload'];
                 <li class="finance">
                     <a href="<?=UrlService::buildWebUrl("/finance/index");?>"><i class="fa fa-rmb fa-lg"></i> <span class="nav-label">财务管理</span></a>
                 </li>
-                <li class="market">
+                <li class="channel">
                     <a href="<?=UrlService::buildWebUrl("/channel/index");?>"><i class="fa fa-share-alt fa-lg"></i> <span class="nav-label">推广渠道</span></a>
                 </li>
                 <li class="market">
@@ -80,9 +80,13 @@ $upload_config = Yii::$app->params['upload'];
 			<nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
 				<div class="navbar-header">
 					<a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="<?=UrlService::buildNullUrl();?>"><i class="fa fa-bars"></i> </a>
-
 				</div>
 				<ul class="nav navbar-top-links navbar-right">
+                    <li>
+						<span class="m-r-sm text-muted welcome-message">
+                            欢迎使用平台后台
+                        </span>
+                    </li>
 					<li>
 						<span class="m-r-sm text-muted welcome-message">
                             欢迎使用平台后台
@@ -98,7 +102,11 @@ $upload_config = Yii::$app->params['upload'];
 
 					<li class="dropdown user_info">
 						<a  class="dropdown-toggle" data-toggle="dropdown" href="<?=UrlService::buildNullUrl();?>">
-                            <img alt="image" class="img-circle" src="<?=UrlService::buildWwwUrl("/images/web/avatar.png");?>" />
+                            <img alt="image" class="img-circle" src="<?php if(isset($this->params['brand_info']) && $this->params['brand_info']['logo']){
+                                echo UrlService::buildPicUrl( "brand",$this->params['brand_info']['logo'] );
+                            }else{
+                                echo UrlService::buildWwwUrl("/images/web/avatar.png");
+                            }?>" />
 						</a>
                         <ul class="dropdown-menu dropdown-messages">
                             <li>
