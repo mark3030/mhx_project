@@ -1,12 +1,13 @@
 <?php
-use \app\common\services\StaticService;
-use \app\common\services\UrlService;
-StaticService::includeAppJsStatic( "/js/m/user/bind.js",\app\assets\MAsset::className() );
+use app\common\services\StaticService;
+use app\common\services\UrlService;
+use app\common\services\UtilService;
+StaticService::includeAppJsStatic( "/js/m/item/bind.js",\app\assets\MAsset::className() );
 ?>
 <?php if($active):?>
     <?php if( $info ):?>
         <div class="page_title clearfix">
-            <span><?=$info['name']; ?></span>
+            <span><?= $info ? UtilService::encode($info['name']) : ''; ?></span>
         </div>
         <div id="slideBox" class="slideBox">
             <div class="bd">
@@ -33,9 +34,9 @@ StaticService::includeAppJsStatic( "/js/m/user/bind.js",\app\assets\MAsset::clas
             </div>
         </div>
         <div class="op_box">
-            <input style="width: 100%;" type="button" value="提交" class="red_btn dologin"  />
+            <input style="width: 100%;" type="button" value="下一步" class="red_btn next"  />
         </div>
     </div>
 <?php else:?>
-    <div class="center">该渠道已失效，请联系客服！！！</div>
+    <div class="no-data">该渠道已失效，请联系客服！！！</div>
 <?php endif;?>

@@ -26,11 +26,11 @@ class ConstantMapService
         0 => '未填写'
     ];
 
-    public static $role_mapping = [
-        1 => '初审员',
-        2 => '复审员',
-        3 => '终审员',
-        4 => '机构管理员'
+    public static $contacts_mapping = [
+        1 => '配偶',
+        2 => '父母',
+        3 => '兄弟姐妹',
+        4 => '子女'
     ];
 
     public static $pay_status_mapping = [
