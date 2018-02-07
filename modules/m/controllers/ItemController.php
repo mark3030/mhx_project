@@ -27,33 +27,24 @@ use app\common\services\AreaService;
 class ItemController extends BaseController
 {
 
-    public function actionIndex()
-    {
-        return $this->render('index', [
-            'current_user' => $this->current_user
-        ]);
-    }
-
-    //账号绑定
+    //客户录入第一步（短信验证）
     public function actionStep()
     {
         if (\Yii::$app->request->isGet) {
             $info = [];
-            $active = true;
+            $active = false;
             $channel_id = $this->get('id');
             if ($channel_id) {
                 $info = ChannelQrcode::getInfoById($channel_id);
                 $active = $info['status'] ? true : false;
             }
-            return $this->render("step", ['info' => $info,'active'=>$active]);
+            return $this->render("step", ['info' => $info, 'active' => $active]);
         }
 
         $mobile = trim($this->post("mobile"));
         $img_captcha = trim($this->post("img_captcha"));
         $captcha_code = trim($this->post("captcha_code"));
         $date_now = date("Y-m-d H:i:s");
-
-        $openid = $this->getCookie($this->auth_cookie_current_openid);
 
         if (mb_strlen($mobile, "utf-8") < 1 || !preg_match("/^[1-9]\d{10}$/", $mobile)) {
             return $this->renderJSON([], "请输入符合要求的手机号码~~", -1);
@@ -78,7 +69,6 @@ class ItemController extends BaseController
             if (Member::findOne(['mobile' => $mobile])) {
                 $this->renderJSON([], "手机号码已注册，请直接使用手机号码登录~~", -1);
             }
-
             $model_member = new Member();
             $model_member->nickname = $mobile;
             $model_member->mobile = $mobile;
@@ -126,120 +116,38 @@ class ItemController extends BaseController
         return $this->renderJSON(['url' => UrlService::buildMUrl("/default/index")], "绑定成功~~");
     }
 
-    public function actionOrder()
-    {
-        $pay_order_list = PayOrder::find()->where(['member_id' => $this->current_user['id']])
-            ->orderBy(['id' => SORT_DESC])->asArray()->all();
 
-        $list = [];
-        if ($pay_order_list) {
-            $pay_order_items_list = PayOrderItem::find()->where(['member_id' => $this->current_user['id'], 'pay_order_id' => array_column($pay_order_list, 'id')])->asArray()->all();
-
-            $book_mapping = Book::find()->where(['id' => array_column($pay_order_items_list, 'target_id')])->indexBy('id')->all();
-
-            $pay_order_items_mapping = [];
-            foreach ($pay_order_items_list as $_pay_order_item) {
-                $tmp_book_info = $book_mapping[$_pay_order_item['target_id']];
-                if (!isset($pay_order_items_mapping[$_pay_order_item['pay_order_id']])) {
-                    $pay_order_items_mapping[$_pay_order_item['pay_order_id']] = [];
-                }
-                $pay_order_items_mapping[$_pay_order_item['pay_order_id']][] = [
-                    'pay_price' => $_pay_order_item['price'],
-                    'book_name' => UtilService::encode($tmp_book_info['name']),
-                    'book_main_image' => UrlService::buildPicUrl("book", $tmp_book_info['main_image']),
-                    'book_id' => $_pay_order_item['target_id'],
-                    'comment_status' => $_pay_order_item['comment_status']
-                ];
+    public function actionIndex(){
+        if (\Yii::$app->request->isGet) {
+            $info = [];
+            $active = false;
+            $channel_id = $this->get('id');
+            if ($channel_id) {
+                $info = ChannelQrcode::getInfoById($channel_id);
+                $active = $info['status'] ? true : false;
             }
-
-            foreach ($pay_order_list as $_pay_order_info) {
-                $list[] = [
-                    'id' => $_pay_order_info['id'],
-                    'sn' => date("Ymd", strtotime($_pay_order_info['created_time'])) . $_pay_order_info['id'],
-                    'created_time' => date("Y-m-d H:i", strtotime($_pay_order_info['created_time'])),
-                    'pay_order_id' => $_pay_order_info['id'],
-                    'pay_price' => $_pay_order_info['pay_price'],
-                    'items' => $pay_order_items_mapping[$_pay_order_info['id']],
-                    'status' => $_pay_order_info['status'],
-                    //'comment_status' => $_pay_order_info[ 'comment_status' ],
-                    'express_status' => $_pay_order_info['express_status'],
-                    'express_info' => $_pay_order_info['express_info'],
-                    'express_status_desc' => ConstantMapService::$express_status_mapping_for_member[$_pay_order_info['express_status']],
-                    'status_desc' => ConstantMapService::$pay_status_mapping[$_pay_order_info['status']],
-                    'pay_url' => UrlService::buildMUrl("/pay/buy/?pay_order_id={$_pay_order_info['id']}")
-                ];
-
-            }
+            return $this->render("index", ['info' => $info, 'active' => $active]);
         }
-
-        return $this->render('order', [
-            'list' => $list
-        ]);
     }
 
-    public function actionFav()
-    {
-        $list = MemberFav::find()->where(['member_id' => $this->current_user['id']])->orderBy(['id' => SORT_DESC])->all();
-        $data = [];
-        if ($list) {
-            $book_mapping = DataHelper::getDicByRelateID($list, Book::className(), "book_id", "id", ['name', 'price', 'main_image', 'stock']);
-            foreach ($list as $_item) {
-                $tmp_book_info = $book_mapping[$_item['book_id']];
-                $data[] = [
-                    'id' => $_item['id'],
-                    'book_id' => $_item['book_id'],
-                    'book_price' => $tmp_book_info['price'],
-                    'book_name' => UtilService::encode($tmp_book_info['name']),
-                    'book_main_image' => UrlService::buildPicUrl("book", $tmp_book_info['main_image'])
-                ];
-            }
-        }
-        return $this->render("fav", [
-            'list' => $data
-        ]);
-    }
 
-    public function actionAddress()
-    {
-
-        $list = MemberAddress::find()->where(['member_id' => $this->current_user['id'], 'status' => 1])
-            ->orderBy(['is_default' => SORT_DESC, 'id' => SORT_DESC])->asArray()->all();
-        $data = [];
-        if ($list) {
-            $area_mapping = DataHelper::getDicByRelateID($list, City::className(), "area_id", "id", ['province', 'city', 'area']);
-            foreach ($list as $_item) {
-                $tmp_area_info = $area_mapping[$_item['area_id']];
-                $tmp_area = $tmp_area_info['province'] . $tmp_area_info['city'];
-                if ($_item['province_id'] != $_item['city_id']) {
-                    $tmp_area .= $tmp_area_info['area'];
-                }
-
-                $data[] = [
-                    'id' => $_item['id'],
-                    'is_default' => $_item['is_default'],
-                    'nickname' => UtilService::encode($_item['nickname']),
-                    'mobile' => UtilService::encode($_item['mobile']),
-                    'address' => $tmp_area . UtilService::encode($_item['address']),
-                ];
-            }
-        }
-        return $this->render('address', [
-            'list' => $data
-        ]);
-    }
-
-    public function actionAddress_set()
+    public function actionBaseInfo()
     {
         if (\Yii::$app->request->isGet) {
-            $id = intval($this->get("id", 0));
             $info = [];
-            if ($id) {
-                $info = MemberAddress::find()->where(['id' => $id, 'member_id' => $this->current_user['id']])->one();
+            $active = false;
+            $channel_id = $this->get('id');
+            if ($channel_id) {
+                $info = ChannelQrcode::getInfoById($channel_id);
+                $active = $info['status'] ? true : false;
             }
-            return $this->render('address_set', [
-                "province_mapping" => AreaService::getProvinceMapping(),
-                'info' => $info
-            ]);
+            return $this->render("base_info",
+                [
+                    'info' => $info,
+                    'contacts_mapping'=> ConstantMapService::$contacts_mapping,
+                    'province_mapping' => AreaService::getProvinceMapping(),
+                    'active' => $active
+                ]);
         }
 
         $id = intval($this->post("id", 0));
@@ -336,94 +244,4 @@ class ItemController extends BaseController
         }
         return $this->renderJSON([], "操作成功~~");
     }
-
-    public function actionComment()
-    {
-        $list = MemberComments::find()->where(['member_id' => $this->current_user['id']])
-            ->orderBy(['id' => SORT_DESC])->asArray()->all();
-
-        return $this->render('comment', [
-            'list' => $list
-        ]);
-    }
-
-    public function actionComment_set()
-    {
-        if (\Yii::$app->request->isGet) {
-            $pay_order_id = intval($this->get("pay_order_id", 0));
-            $book_id = intval($this->get("book_id", 0));
-            $pay_order_info = PayOrder::findOne(['id' => $pay_order_id, 'status' => 1, 'express_status' => 1]);
-            $reback_url = UrlService::buildMUrl("/user/index");
-            if (!$pay_order_info) {
-                return $this->redirect($reback_url);
-            }
-
-            $pay_order_item_info = PayOrderItem::findOne(['pay_order_id' => $pay_order_id, 'target_id' => $book_id]);
-            if (!$pay_order_item_info) {
-                return $this->renderJSON([], ConstantMapService::$default_syserror, -1);
-            }
-
-            if ($pay_order_item_info['comment_status']) {
-                return $this->renderJS("您已经评论过啦，不能重复评论~~", $reback_url);
-            }
-
-
-            return $this->render('comment_set', [
-                'pay_order_info' => $pay_order_info,
-                'book_id' => $book_id
-            ]);
-        }
-
-        $pay_order_id = intval($this->post("pay_order_id", 0));
-        $book_id = intval($this->post("book_id", 0));
-        $score = intval($this->post("score", 0));
-        $content = trim($this->post('content', ''));
-        $date_now = date("Y-m-d H:i:s");
-
-        if ($score <= 0) {
-            return $this->renderJSON([], "请打分~~", -1);
-        }
-
-        if (mb_strlen($content, "utf-8") < 3) {
-            return $this->renderJSON([], "请输入符合要求的评论内容~~", -1);
-        }
-
-        $pay_order_info = PayOrder::findOne(['id' => $pay_order_id, 'status' => 1, 'express_status' => 1]);
-        if (!$pay_order_info) {
-            return $this->renderJSON([], ConstantMapService::$default_syserror, -1);
-        }
-
-        $pay_order_item_info = PayOrderItem::findOne(['pay_order_id' => $pay_order_id, 'target_id' => $book_id]);
-        if (!$pay_order_item_info) {
-            return $this->renderJSON([], ConstantMapService::$default_syserror, -1);
-        }
-
-        if ($pay_order_item_info['comment_status']) {
-            return $this->renderJSON([], "您已经评论过啦，不能重复评论~~", -1);
-        }
-
-        $book_info = Book::findOne(['id' => $book_id]);
-        if (!$book_info) {
-            return $this->renderJSON([], ConstantMapService::$default_syserror, -1);
-        }
-
-        $model_comment = new MemberComments();
-        $model_comment->member_id = $this->current_user['id'];
-        $model_comment->book_id = $book_id;
-        $model_comment->pay_order_id = $pay_order_id;
-        $model_comment->score = $score * 2;
-        $model_comment->content = $content;
-        $model_comment->created_time = $date_now;
-        $model_comment->save(0);
-
-        $pay_order_item_info->comment_status = 1;
-        $pay_order_item_info->update(0);
-
-        $book_info->comment_count += 1;
-        $book_info->update(0);
-
-
-        return $this->renderJSON([], "评论成功~~");
-    }
-
 }

@@ -24,6 +24,7 @@ class BaseController extends BaseWebController {
 		'm/product/search',
 
         'm/item/step',
+        'm/item/index',
 	];
 
 	/**
